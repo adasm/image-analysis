@@ -4,6 +4,7 @@ import java.awt.geom.Point2D;
 
 public class Point extends Point2D.Float {
     public Features features = new Features();
+    public Point nearest = null;
 
     public Point(String desc) {
         String params[] = desc.split(" ");
@@ -12,5 +13,14 @@ public class Point extends Point2D.Float {
 
         for(int i = 0; i < 128; ++i)
             features.data[i] = Integer.parseInt(params[i + 5]);
+    }
+
+    public float featureDistance(Point point) {
+        return features.distance(point.features);
+    }
+
+    public void checkNearest() {
+        if(nearest == null || nearest.nearest == this)
+            nearest = null;
     }
 }
