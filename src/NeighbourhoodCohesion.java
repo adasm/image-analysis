@@ -20,6 +20,8 @@ public class NeighbourhoodCohesion {
                 p.reject();
 
             Progress.step();
+            if(Analysis.stop)
+                break;
         }
 
         Point.removeRejected(imageA.points, imageB.points);

@@ -4,21 +4,21 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
-public class Point extends Point2D.Float {
+public class Point extends Point2D.Double {
     public Features features    = new Features();
     public Point    nearest     = null;
 
-    public Point(String desc) {
+    public Point(String desc, double imageWidth, double imageHeight) {
         String params[] = desc.split(" ");
 
-        this.x = java.lang.Float.parseFloat(params[0]);
-        this.y = java.lang.Float.parseFloat(params[1]);
+        this.x = java.lang.Double.parseDouble(params[0]) / imageWidth;
+        this.y = java.lang.Double.parseDouble(params[1]) / imageHeight;
 
         for(int i = 0; i < 128; ++i)
             features.data[i] = Integer.parseInt(params[i + 5]);
     }
 
-    public float featureDistance(Point point) {
+    public double featureDistance(Point point) {
         return features.distance(point.features);
     }
 
@@ -34,7 +34,7 @@ public class Point extends Point2D.Float {
     }
 
     public void findMostSimilarPoint(ArrayList<Point> points) {
-        float d = java.lang.Float.MAX_VALUE, c;
+        double d = java.lang.Double.MAX_VALUE, c;
         nearest = null;
         for (Point target : points) {
             c = featureDistance(target);

@@ -2,7 +2,7 @@
 
 public class Pair implements Comparable<Pair> {
     public Point point;
-    public float value;
+    public double value;
 
     public Pair(Point source, Point target, Value pairValue) {
         point = target;
@@ -10,11 +10,11 @@ public class Pair implements Comparable<Pair> {
     }
 
     public static interface Value {
-        public float evaluate(Point a, Point b);
+        public double evaluate(Point a, Point b);
     }
 
     @Override
     public int compareTo(Pair other) {
-        return Float.compare(value, other.value);
+        return Double.compare(value, other.value);
     }
 }
