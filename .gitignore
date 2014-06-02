@@ -3,3 +3,5 @@
 *.png
 *.sift
 *.params
+*.jpeg
+*.exe.stackdump

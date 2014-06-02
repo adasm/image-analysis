@@ -2,17 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4fcd5699-ce72-4de6-bc97-56f114e0e3cf" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Analysis.java" afterPath="$PROJECT_DIR$/src/Analysis.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Features.java" afterPath="$PROJECT_DIR$/src/Features.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Image.java" afterPath="$PROJECT_DIR$/src/Image.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Main.java" afterPath="$PROJECT_DIR$/src/Main.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Neighbourhood.java" afterPath="$PROJECT_DIR$/src/Neighbourhood.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/NeighbourhoodCohesion.java" afterPath="$PROJECT_DIR$/src/NeighbourhoodCohesion.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Pair.java" afterPath="$PROJECT_DIR$/src/Pair.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Point.java" afterPath="$PROJECT_DIR$/src/Point.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Progress.java" afterPath="$PROJECT_DIR$/src/Progress.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Ransac.java" afterPath="$PROJECT_DIR$/src/Ransac.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Window.java" afterPath="$PROJECT_DIR$/src/Window.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/extract_features_32bit.exe.stackdump" afterPath="$PROJECT_DIR$/bin/extract_features_32bit.exe.stackdump" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -489,7 +478,11 @@
       <created>1401670548848</created>
       <updated>1401670548848</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Changed calculation space to 0..1 and added multithread support">
+      <created>1401741735617</created>
+      <updated>1401741735617</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -539,7 +532,8 @@
     <MESSAGE value="Loading and drawing keypoints" />
     <MESSAGE value="Finding neighbourhood" />
     <MESSAGE value="Added RANSAC method" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added RANSAC method" />
+    <MESSAGE value="Changed calculation space to 0..1 and added multithread support" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed calculation space to 0..1 and added multithread support" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
