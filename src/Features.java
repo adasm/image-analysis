@@ -5,9 +5,11 @@ public class Features {
     public int data[] = new int[FEATURES_SIZE];
 
     public float distance(Features features) {
-        float d = 0;
-        for(int i = 0; i < FEATURES_SIZE; ++i)
-            d += Math.abs(data[i] - features.data[i]);
+        float d = 0, c;
+        for(int i = 0; i < FEATURES_SIZE; ++i) {
+            c = Math.abs(data[i] - features.data[i]);
+            d += c*c;
+        }
         return d;
     }
 }

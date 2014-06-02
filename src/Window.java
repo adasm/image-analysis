@@ -12,8 +12,8 @@ public class Window extends JFrame implements ActionListener {
     public static String        progressString = "";
     public static JProgressBar  progressBar = null;
     public static ImageDrawer   imageDrawer = null;
-    public static boolean       showPoints = false,
-                                showNearest = false;
+    public static boolean       showPoints = true,
+                                showNearest = true;
 
     public Window() {
         setSize(1000, 600);
@@ -106,39 +106,51 @@ public class Window extends JFrame implements ActionListener {
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                                  RenderingHints.VALUE_ANTIALIAS_ON);
 
-            g2d.setColor(new Color(255,0,255));
+            g2d.setColor(new Color(255,0,128, 128));
             g2d.setStroke(new BasicStroke(1));
             if(showNearest) {
                 drawNearest(g2d, A, x1, y1, ratio1, x2, y2, ratio2);
             }
 
-            g2d.setColor(new Color(0,0,0));
-            g2d.setStroke(new BasicStroke(2));
+            g2d.setColor(new Color(255,0,0, 150));
+            g2d.setStroke(new BasicStroke(5));
 
             if(showPoints) {
                 drawPoints(g2d, A, x1, y1, ratio1);
                 drawPoints(g2d, B, x2, y2, ratio2);
             }
+
+            g2d.setColor(new Color(198, 198, 198));
+            g2d.setStroke(new BasicStroke(1));
+            g2d.fillRect(0, 0, (int)w1, 30);
+
+            g2d.setColor(new Color(0,0,0));
+            g2d.drawString("Matched pairs: " + Analysis.matchedPairs, 0, 12);
+            g2d.drawString("Similarity: " + String.format("%.2f %%", Analysis.percent), 0, 27);
         }
 
         public void drawPoints(Graphics2D g2d, Image image, float dx, float dy, float ratio) {
-            for(Point p : image.points) {
-                float x = dx + ratio * p.x;
-                float y = dy + ratio * p.y;
-                g2d.drawLine((int)x, (int)y, (int)x, (int)y);
+            synchronized(image.points) {
+                for (Point p : image.points) {
+                    float x = dx + ratio * p.x;
+                    float y = dy + ratio * p.y;
+                    g2d.drawLine((int) x, (int) y, (int) x, (int) y);
+                }
             }
         }
 
         public void drawNearest(Graphics2D g2d, Image image, float dx, float dy, float ratio, float dx2, float dy2, float ratio2) {
-            for(Point p : image.points) {
-                Point n = p.nearest;
-                if(n == null) continue;
+            synchronized(image.points) {
+                for (Point p : image.points) {
+                    Point n = p.nearest;
+                    if (n == null) continue;
 
-                float x = dx + ratio * p.x;
-                float y = dy + ratio * p.y;
-                float x2 = dx2 + ratio2 * n.x;
-                float y2 = dy2 + ratio2 * n.y;
-                g2d.drawLine((int)x, (int)y, (int)x2, (int)y2);
+                    float x = dx + ratio * p.x;
+                    float y = dy + ratio * p.y;
+                    float x2 = dx2 + ratio2 * n.x;
+                    float y2 = dy2 + ratio2 * n.y;
+                    g2d.drawLine((int) x, (int) y, (int) x2, (int) y2);
+                }
             }
         }
     }

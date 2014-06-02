@@ -17,7 +17,7 @@ public class Image {
     public Image(String name) {
         this.name = name;
         this.sourcePath = "bin/" + name + ".png";
-        this.paramsPath = "bin/" + name + ".sift";
+        this.paramsPath = "bin/" + name + ".png.haraff.sift";
         loadSource();
         loadPoints();
     }
