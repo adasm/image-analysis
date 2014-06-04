@@ -1,7 +1,5 @@
 *.class
 *.jpg
-*.png
-*.sift
 *.params
 *.jpeg
 *.exe.stackdump
