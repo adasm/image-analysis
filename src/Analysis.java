@@ -7,6 +7,10 @@ public class Analysis implements Runnable {
     public static Image imageA = null, imageB = null;
     public static boolean stop = false;
     private static Object lock = new Object();
+    public static boolean doneNearest = false;
+    public static boolean doNeighbourhoodCohesion = true,
+                          doRansac = true,
+                          transformPerspective = true;
 
     private static Image first = null, second = null;
 
@@ -25,8 +29,10 @@ public class Analysis implements Runnable {
     public static void compare(String first, String second) {
         System.out.println("Comparing " + first + " and " + second);
         stop = false;
+        doneNearest = false;
         Analysis.first = new Image(first);
         Analysis.second = new Image(second);
+        Window.update(true);
         new Thread(new Analysis()).start();
     }
 
@@ -41,15 +47,20 @@ public class Analysis implements Runnable {
         numPoints += imageA.points.size() + imageB.points.size();
 
         Neighbourhood.findNearestPointMethod(imageA, imageB);
+        doneNearest = true;
         update();
         if(stop) return;
 
-        NeighbourhoodCohesion.analyse(imageA, imageB, 4, 0.5f);
-        update();
-        if(stop) return;
+        if(doNeighbourhoodCohesion && !doRansac) {
+            NeighbourhoodCohesion.analyse(imageA, imageB, 20, 0.5f);
+            update();
+            if (stop) return;
+        }
 
-        Ransac.analyse(imageA, imageB, 0.1f, 1.0f, 100000, 0.1f, true);
-        update();
+        if(doRansac) {
+            Ransac.analyse(imageA, imageB, 0.01f, 0.4f, 100000, 0.1f, transformPerspective);
+            update();
+        }
     }
 
 

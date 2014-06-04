@@ -14,6 +14,7 @@ public class Image {
     public double           width = 1, height = 1;
     public java.awt.Image   source = null;
     public ArrayList<Point> points = new ArrayList<Point>();
+    public ArrayList<Point> pointsAll = new ArrayList<Point>();
 
     public Image(String name) {
         this.name = name;
@@ -41,8 +42,11 @@ public class Image {
 
             scanner.nextLine();
             int size = Integer.parseInt(scanner.nextLine());
-            while(size-- > 0)
-                points.add(new Point(scanner.nextLine(), width, height));
+            while(size-- > 0) {
+                String pointDesc = scanner.nextLine();
+                pointsAll.add(new Point(pointDesc, width, height));
+                points.add(new Point(pointDesc, width, height));
+            }
 
             System.out.println("Loaded " + points.size() + " points from " + paramsPath);
         } catch (FileNotFoundException e) {

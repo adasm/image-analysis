@@ -13,6 +13,7 @@ public class Window extends JFrame implements ActionListener {
     public static JProgressBar  progressBar = null;
     public static ImageDrawer   imageDrawer = null;
     public static boolean       showPoints = true,
+                                showAllPoints = false,
                                 showNearest = true,
                                 showStats = false;
 
@@ -31,21 +32,7 @@ public class Window extends JFrame implements ActionListener {
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
 
-        JMenu menuShow = new JMenu("Show");
-
-        JMenuItem menuShowPoints = new JMenuItem("Show Key Points");
-        menuShowPoints.setActionCommand("show_points");
-        menuShowPoints.addActionListener(this);
-        menuShow.add(menuShowPoints);
-
-        JMenuItem menuShowNearest = new JMenuItem("Show Nearest");
-        menuShowNearest.setActionCommand("show_nearest");
-        menuShowNearest.addActionListener(this);
-        menuShow.add(menuShowNearest);
-
-        menuBar.add(menuShow);
-
-        JMenu menuLoad = new JMenu("Load pair");
+        JMenu menuLoad = new JMenu("Load");
         for(String pairName[] : Main.pairsNames) {
             JMenuItem pairMenu = new JMenuItem(pairName[0] + "-" + pairName[1]);
             pairMenu.putClientProperty("first", pairName[0]);
@@ -55,6 +42,41 @@ public class Window extends JFrame implements ActionListener {
             menuLoad.add(pairMenu);
         }
         menuBar.add(menuLoad);
+
+        JMenu menuShow = new JMenu("Show");
+        JMenuItem menuShowAllPoints = new JMenuItem("Show All Key Points");
+        menuShowAllPoints.setActionCommand("show_all_points");
+        menuShowAllPoints.addActionListener(this);
+        menuShow.add(menuShowAllPoints);
+        JMenuItem menuShowPoints = new JMenuItem("Show Filtered Key Points");
+        menuShowPoints.setActionCommand("show_points");
+        menuShowPoints.addActionListener(this);
+        menuShow.add(menuShowPoints);
+        JMenuItem menuShowNearest = new JMenuItem("Show Nearest");
+        menuShowNearest.setActionCommand("show_nearest");
+        menuShowNearest.addActionListener(this);
+        menuShow.add(menuShowNearest);
+        menuBar.add(menuShow);
+
+        JMenu menuOptions = new JMenu("Options");
+        JMenuItem menuOptionsDoCohesion = new JMenuItem(Analysis.doNeighbourhoodCohesion ? "Neighbourhood Cohesion : ON" : "Neighbourhood Cohesion : OFF");
+        menuOptionsDoCohesion.setActionCommand("cohesion");
+        menuOptionsDoCohesion.addActionListener(this);
+        menuOptions.add(menuOptionsDoCohesion);
+        JMenuItem menuOptionsRansac = new JMenuItem(Analysis.doRansac ? "RANSAC : ON" : "RANSAC : OFF");
+        menuOptionsRansac.setActionCommand("ransac");
+        menuOptionsRansac.addActionListener(this);
+        menuOptions.add(menuOptionsRansac);
+        JMenuItem menuOptionsPerspective = new JMenuItem(Analysis.transformPerspective ? "Transform : Perspective" : "Transform : Affinite");
+        menuOptionsPerspective.setActionCommand("transform");
+        menuOptionsPerspective.addActionListener(this);
+        menuOptions.add(menuOptionsPerspective);
+        menuBar.add(menuOptions);
+
+        JMenuItem menuReprocess = new JMenuItem("Reprocess");
+        menuReprocess.setActionCommand("restart");
+        menuReprocess.addActionListener(this);
+        menuBar.add(menuReprocess);
 
         imageDrawer = new ImageDrawer();
         add(imageDrawer, BorderLayout.CENTER);
@@ -69,10 +91,30 @@ public class Window extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
-        if(command.equals("show_points")) {
+        if (command.equals("show_points")) {
             showPoints = !showPoints;
-        } else if(command.equals("show_nearest")) {
+        } else if (command.equals("show_all_points")) {
+            showAllPoints = !showAllPoints;
+        } else if (command.equals("show_nearest")) {
             showNearest = !showNearest;
+        } else if (command.equals("cohesion")) {
+            Analysis.doNeighbourhoodCohesion = !Analysis.doNeighbourhoodCohesion;
+            ((JMenuItem)(e.getSource())).setText(Analysis.doNeighbourhoodCohesion ? "Neighbourhood Cohesion : ON" : "Neighbourhood Cohesion : OFF");
+        } else if (command.equals("ransac")) {
+            Analysis.doRansac = !Analysis.doRansac;
+            ((JMenuItem)(e.getSource())).setText(Analysis.doRansac ? "RANSAC : ON" : "RANSAC : OFF");
+        } else if (command.equals("transform")) {
+            Analysis.transformPerspective = !Analysis.transformPerspective;
+            ((JMenuItem)(e.getSource())).setText(Analysis.transformPerspective ? "Transform : Perspective" : "Transform : Affinite");
+        } else if (command.equals("restart")) {
+            Analysis.stop = true;
+            Analysis.waitTillFinished();
+            if(Analysis.imageA != null && Analysis.imageB != null) {
+                String first = Analysis.imageA.name;
+                String second = Analysis.imageB.name;
+                System.out.println("Loading pair " + first + " and " + second);
+                Analysis.compare(first, second);
+            }
         } else if(command.equals("load")) {
             JMenuItem item = (JMenuItem)e.getSource();
             String first = (String)item.getClientProperty("first");
@@ -136,12 +178,10 @@ public class Window extends JFrame implements ActionListener {
 
             g2d.setColor(new Color(255,0,128, 128));
             g2d.setStroke(new BasicStroke(1));
-            if(showNearest) {
-                drawNearest(g2d, A, x1, y1, w1, h1, x2, y2, w2, h2);
+            if(showNearest && Analysis.doneNearest) {
+                drawNearest(g2d, A, B, x1, y1, w1, h1, x2, y2, w2, h2);
             }
 
-            g2d.setColor(new Color(255,0,0, 150));
-            g2d.setStroke(new BasicStroke(5));
 
             if(showPoints) {
                 drawPoints(g2d, A, x1, y1, w1, h1);
@@ -160,6 +200,18 @@ public class Window extends JFrame implements ActionListener {
         }
 
         public void drawPoints(Graphics2D g2d, Image image, double dx, double dy, double w, double h) {
+            if(showAllPoints) {
+                g2d.setColor(new Color(255, 255, 0, 150));
+                g2d.setStroke(new BasicStroke(3));
+                for (Point p : image.pointsAll) {
+                    double x = dx + w * p.x;
+                    double y = dy + h * p.y;
+                    g2d.drawLine((int) x, (int) y, (int) x, (int) y);
+                }
+            }
+
+            g2d.setColor(new Color(255,0,0, 150));
+            g2d.setStroke(new BasicStroke(5));
             synchronized(image.points) {
                 for (Point p : image.points) {
                     double x = dx + w * p.x;
@@ -169,17 +221,19 @@ public class Window extends JFrame implements ActionListener {
             }
         }
 
-        public void drawNearest(Graphics2D g2d, Image image, double dx, double dy, double w, double h, double dx2, double dy2, double w2, double h2) {
-            synchronized(image.points) {
-                for (Point p : image.points) {
-                    Point n = p.nearest;
-                    if (n == null) continue;
+        public void drawNearest(Graphics2D g2d, Image A, Image B, double dx, double dy, double w, double h, double dx2, double dy2, double w2, double h2) {
+            synchronized (A.points) {
+                synchronized (B.points) {
+                    for (Point p : A.points) {
+                        Point n = p.nearest;
+                        if (n == null) continue;
 
-                    double x = dx + w * p.x;
-                    double y = dy + h * p.y;
-                    double x2 = dx2 + w2 * n.x;
-                    double y2 = dy2 + h2 * n.y;
-                    g2d.drawLine((int) x, (int) y, (int) x2, (int) y2);
+                        double x = dx + w * p.x;
+                        double y = dy + h * p.y;
+                        double x2 = dx2 + w2 * n.x;
+                        double y2 = dy2 + h2 * n.y;
+                        g2d.drawLine((int) x, (int) y, (int) x2, (int) y2);
+                    }
                 }
             }
         }
