@@ -5,3 +5,5 @@
 *.params
 *.jpeg
 *.exe.stackdump
+
+.idea/workspace.xml
